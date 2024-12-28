@@ -9,7 +9,7 @@ The connection to the Azure SQL database can be configured in an .env file
 1. Rename the .env.example file as .env
 2. Configure the port as well as all of the Azure SQL database settings
 
-### Azure SQL Database Configuration
+### Azure SQL Database
 1. `CREATE DATABASE WeatherLogDB;`
 2. `USE WeatherLogDB;`
 3. `CREATE TABLE weather (`  

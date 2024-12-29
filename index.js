@@ -29,7 +29,8 @@ function authenticateAPIKey(req, res, next) {
 
     if (receivedAPIKey !== getApiKey) {
         console.error('Invalid GET authentication');
-        return res.status(401).send('Invalid GET authentication');
+        console.log('Received API Key: ' + receivedAPIKey);
+        return res.status(401).send('Invalid authentication');
     }
     next();
 }
@@ -48,7 +49,7 @@ sql.connect(config).then(pool => {
         if (receivedAPIKey !== postApiKey) {
             console.error('Invalid POST authentication');
             console.log('Received API Key: ' + receivedAPIKey);
-            res.status(401).send('Invalid POST authentication');
+            res.status(401).send('Invalid authentication');
             return;
         }
 

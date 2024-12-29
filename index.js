@@ -5,7 +5,8 @@ const cors = require('cors');
 
 const server = express();
 const port = process.env.PORT;
-const apiKey = process.env.API_KEY;
+const getApiKey = process.env.GET_API_KEY;
+const postApiKey = process.env.POST_API_KEY;
 
 server.use(cors());
 server.use(express.json());
@@ -21,6 +22,18 @@ const config = {
     }
 };
 
+// Check GET API key
+function authenticateAPIKey(req, res, next) {
+    const receivedAPIKey = req.headers['x-api-key'];
+    console.log(`Received API_KEY: ${receivedAPIKey}`);
+
+    if (receivedAPIKey !== getApiKey) {
+        console.error('Invalid GET authentication');
+        return res.status(401).send('Invalid GET authentication');
+    }
+    next();
+}
+
 sql.connect(config).then(pool => {
     if (pool.connected) {
         console.log('Connected to Azure SQL');
@@ -32,10 +45,10 @@ sql.connect(config).then(pool => {
         const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const receivedAPIKey = req.body.apiKey;
 
-        if (receivedAPIKey !== apiKey) {
-            console.error('Invalid authentication');
+        if (receivedAPIKey !== postApiKey) {
+            console.error('Invalid POST authentication');
             console.log('Received API Key: ' + receivedAPIKey);
-            res.status(401).send('Invalid authentication');
+            res.status(401).send('Invalid POST authentication');
             return;
         }
 
@@ -57,7 +70,7 @@ sql.connect(config).then(pool => {
         }
     });
 
-    server.get('/data', async function (req, res) {
+    server.get('/data', authenticateAPIKey, async function (req, res) {
         const query = 'SELECT TOP 3600 temperature, humidity, logtime FROM weather ORDER BY logtime DESC';
         try {
             const result = await pool.request().query(query);

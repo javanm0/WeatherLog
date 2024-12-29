@@ -34,6 +34,7 @@ sql.connect(config).then(pool => {
 
         if (receivedAPIKey !== apiKey) {
             console.error('Invalid authentication');
+            console.log('Received API Key: ' + receivedAPIKey);
             res.status(401).send('Invalid authentication');
             return;
         }

@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const server = express();
 const port = process.env.PORT;
+const apiKey = process.env.API_KEY;
 
 server.use(cors());
 server.use(express.json());
@@ -29,6 +30,13 @@ sql.connect(config).then(pool => {
         const temperature = req.body.temperature;
         const humidity = req.body.humidity;
         const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const receivedAPIKey = req.body.apiKey;
+
+        if (receivedAPIKey !== apiKey) {
+            console.error('Invalid authentication');
+            res.status(401).send('Invalid authentication');
+            return;
+        }
 
         console.log('Temperature: ' + temperature);
         console.log('Humidity: ' + humidity);

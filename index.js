@@ -40,6 +40,10 @@ sql.connect(config).then(pool => {
         console.log('Connected to Azure SQL');
     }
 
+    server.get('/', function (req, res) {
+        res.redirect('https://github.com/javanm0/WeatherLog');
+    });
+
     server.post('/api', async function (req, res) {
         const temperature = req.body.temperature;
         const humidity = req.body.humidity;

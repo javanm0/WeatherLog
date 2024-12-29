@@ -10,6 +10,7 @@ The connection to the Azure SQL database can be configured in an .env file
 2. Configure the port as well as all of the Azure SQL database settings
 
 ### Azure SQL Database
+The database can be created with the following commands
 1. `CREATE DATABASE WeatherLogDB;`
 2. `USE WeatherLogDB;`
 3. `CREATE TABLE weather (`  
@@ -18,3 +19,11 @@ The connection to the Azure SQL database can be configured in an .env file
     `humidity FLOAT NOT NULL,`  
     `logtime DATETIME NOT NULL`  
 `);`  
+
+## Live Demo
+### Frontend Server
+[https://weather.javanmiller.com](https://weather.javanmiller.com)
+
+### Backend Server
+[https://api.weather.javanmiller.com](https://api.weather.javanmiller.com)
+

@@ -8,6 +8,8 @@ The logged data can be retrieved by the Azure SQL database with the API GET requ
 The connection to the Azure SQL database can be configured in an .env file
 1. Rename the .env.example file as .env
 2. Configure the port as well as all of the Azure SQL database settings
+3. Specify API keys for authentication
+4. Configure number of minutes of data retrieved as well as interval
 
 ### Azure SQL Database
 The database can be created with the following commands

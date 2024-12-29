@@ -7,6 +7,8 @@ const server = express();
 const port = process.env.PORT;
 const getApiKey = process.env.GET_API_KEY;
 const postApiKey = process.env.POST_API_KEY;
+const dataMinutes = process.env.DATA_MINUTES;
+const dataIntervalSeconds = process.env.DATA_INTERVAL_SECONDS;
 
 server.use(cors());
 server.use(express.json());
@@ -76,10 +78,27 @@ sql.connect(config).then(pool => {
     });
 
     server.get('/data', authenticateAPIKey, async function (req, res) {
-        const query = 'SELECT TOP 3600 temperature, humidity, logtime FROM weather ORDER BY logtime DESC';
+        const query = `
+            WITH NumberedWeather AS (
+                SELECT 
+                    temperature, 
+                    humidity, 
+                    logtime, 
+                    ROW_NUMBER() OVER (ORDER BY logtime DESC) AS RowNum
+                FROM weather
+                WHERE logtime >= DATEADD(MINUTE, -${dataMinutes}, GETDATE())
+            )
+            SELECT 
+                temperature, 
+                humidity, 
+                logtime
+            FROM NumberedWeather
+            WHERE RowNum % ${dataIntervalSeconds} = 0
+            ORDER BY logtime DESC
+        `;
         try {
-            const result = await pool.request().query(query);
-            res.json(result.recordset);
+        const result = await pool.request().query(query);
+        res.json(result.recordset);
         } catch (err) {
             console.error('Error fetching data from Azure SQL: ' + err.stack);
             res.status(500).send('Error fetching data from Azure SQL: ' + err.stack);
